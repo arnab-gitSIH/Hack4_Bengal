@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Owner Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-gray-100 to-indigo-100 min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow px-8 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-indigo-700">🏠 Owner Dashboard</h1>
+        <div class="flex items-center space-x-4">
+            <span class="text-gray-700 font-medium">{{ session['user_email'] }}</span>
+            <a href="{{ url_for('main.logout') }}" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">Logout</a>
+        </div>
+    </nav>
+
+    <main class="px-6 py-10">
+        <h2 class="text-2xl font-semibold mb-6 text-gray-800 text-center">📄 Your Payment Records</h2>
+
+        <div class="bg-white p-6 rounded-xl shadow-md max-w-5xl mx-auto">
+            <table class="w-full table-auto text-sm text-gray-700">
+                <thead class="bg-indigo-100">
+                    <tr class="text-left">
+                        <th class="px-6 py-3">Month</th>
+                        <th class="px-6 py-3">Year</th>
+                        <th class="px-6 py-3">Amount Due</th>
+                        <th class="px-6 py-3">Amount Paid</th>
+                        <th class="px-6 py-3">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for p in payments %}
+                    <tr class="hover:bg-indigo-50">
+                        <td class="px-6 py-3">{{ p.month }}</td>
+                        <td class="px-6 py-3">{{ p.year }}</td>
+                        <td class="px-6 py-3">₹{{ p.amount_due }}</td>
+                        <td class="px-6 py-3">₹{{ p.amount_paid }}</td>
+                        <td class="px-6 py-3">
+                            {% if p.status == 'Paid' %}
+                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">Paid</span>
+                            {% else %}
+                            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

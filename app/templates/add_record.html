@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Record</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen font-sans">
+    
+
+    <!-- Navbar -->
+    <div class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-blue-800">🏢 Add Flat Record</h1>
+        
+        <div class="space-x-4">
+            <a href="{{ url_for('main.secretary_dashboard') }}" class="text-gray-600 hover:text-blue-700 transition">Dashboard</a>
+            <a href="{{ url_for('main.show_flats') }}" class="text-gray-600 hover:text-blue-700 transition">Show Table</a>
+            <a href="{{ url_for('main.payment_status') }}" class="text-gray-600 hover:text-blue-700 transition">Payment Status</a>
+        </div>
+
+        <!-- Profile -->
+        <div class="relative group">
+            <button class="bg-gray-200 p-2 rounded-full hover:bg-gray-300 transition">
+                <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user.svg" class="w-8 h-8" alt="Profile">
+            </button>
+            <div class="absolute right-0 mt-2 w-40 bg-white border rounded shadow-md hidden group-hover:block z-10">
+                <div class="px-4 py-2 text-gray-700 font-medium">{{ session['email'] }}</div>
+                <a href="{{ url_for('main.logout') }}" class="block px-4 py-2 text-red-600 hover:bg-red-100">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Container -->
+    <div class="max-w-xl mx-auto bg-white shadow-md mt-10 p-8 rounded-lg">
+        <h2 class="text-2xl font-semibold mb-6 text-center text-gray-800">Add New Flat Owner Record</h2>
+
+        <form action="{{ url_for('main.add_record') }}" method="POST" class="space-y-5">
+            <div>
+                <label class="block text-gray-700">Flat Number</label>
+                <input type="text" name="flat_number" required class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Owner Name</label>
+                <input type="text" name="owner_name" required class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Owner Email</label>
+                <input type="email" name="owner_email" required class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Default Monthly Maintenance Amount</label>
+                <input type="number" name="default_amount" step="0.01" required class="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Add Record</button>
+        </form>
+    </div>
+    
+
+</body>
+</html>

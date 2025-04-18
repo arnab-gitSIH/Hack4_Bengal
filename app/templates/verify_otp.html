@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verify OTP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-yellow-100 to-orange-200 min-h-screen flex items-center justify-center">
+
+  <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full fade-in">
+    <h2 class="text-2xl font-semibold text-center text-orange-600 mb-4">🔐 OTP Verification</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="text-red-600 text-sm text-center mb-3">
+          {% for message in messages %}
+            {{ message }}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="space-y-4">
+      <div>
+        <label class="block text-gray-700">Enter the OTP sent to your email</label>
+        <input type="text" name="otp" required maxlength="6"
+               class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300">
+      </div>
+
+      <button type="submit"
+              class="w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600 transition">
+        Verify
+      </button>
+    </form>
+
+    <p class="text-center text-sm text-gray-600 mt-4">
+      Didn't receive it? <a href="#" class="text-orange-600 hover:underline">Resend OTP</a>
+    </p>
+  </div>
+</body>
+</html>

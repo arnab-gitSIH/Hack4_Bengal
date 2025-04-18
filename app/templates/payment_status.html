@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Status</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen">
+
+    <!-- Navbar -->
+    <div class="bg-white shadow-md px-6 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-blue-900">💳 Payment Status</h1>
+        <div class="space-x-4">
+            <a href="{{ url_for('main.secretary_dashboard') }}" class="text-gray-600 hover:text-blue-700 transition">Dashboard</a>
+            <a href="{{ url_for('main.add_record') }}" class="text-gray-600 hover:text-blue-700 transition">Add Record</a>
+            <a href="{{ url_for('main.show_flats') }}" class="text-gray-600 hover:text-blue-700 transition">Show Table</a>
+        </div>
+        <div class="relative group">
+            <button class="bg-gray-200 p-2 rounded-full hover:bg-gray-300 transition">
+                <img src="https://www.svgrepo.com/show/384674/account-avatar-profile-user.svg" class="w-8 h-8" alt="Profile">
+            </button>
+            <div class="absolute right-0 mt-2 w-40 bg-white border rounded shadow-md hidden group-hover:block z-10">
+                <div class="px-4 py-2 text-gray-700 font-medium">{{ session['email'] }}</div>
+                <a href="{{ url_for('main.logout') }}" class="block px-4 py-2 text-red-600 hover:bg-red-100">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Table -->
+    <div class="max-w-7xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">📅 Monthly Maintenance Payments</h2>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm text-left text-gray-700">
+                <thead class="bg-blue-200 text-gray-800 font-semibold">
+                    <tr>
+                        <th class="px-4 py-2">Flat Number</th>
+                        <th class="px-4 py-2">Owner Name</th>
+                        <th class="px-4 py-2">Email</th>
+                        <th class="px-4 py-2">Amount Due</th>
+                        <th class="px-4 py-2">Amount Paid</th>
+                        <th class="px-4 py-2">Maintenance Value Pending</th>
+                        <th class="px-4 py-2">Status</th>
+                        <th class="px-4 py-2">Update</th>
+                        <th class="px-4 py-2">Reminder</th>
+                        <th class="px-4 py-2">Delete</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for p in payments %}
+                    <tr class="hover:bg-blue-50">
+                        <td class="px-4 py-2">{{ p.flat_number }}</td>
+                        <td class="px-4 py-2">{{ p.owner_name }}</td>
+                        <td class="px-4 py-2">{{ p.owner_email }}</td>
+                        <td class="px-4 py-2">₹{{ p.amount_due }}</td>
+                        <td class="px-4 py-2">₹{{ p.amount_paid }}</td>
+                        <td class="px-4 py-2">
+                            {% if p.maintenance_value_pending is not none %}
+                                ₹{{ "%.2f"|format(p.maintenance_value_pending) }}
+                            {% else %}
+                                <span class="text-gray-400">Not Set</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-2">
+                            {% if p.status == 'Paid' %}
+                                <span class="bg-green-200 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Paid</span>
+                            {% else %}
+                                <span class="bg-red-200 text-red-800 px-3 py-1 rounded-full text-xs font-semibold">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-2">
+                            {% if p.status == 'Pending' %}
+                            <form onsubmit="markPaid(event, {{ p.id }})" class="flex">
+                                <input type="number" name="months_paid" placeholder="Months" required class="w-20 p-1 border rounded">
+                                <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 ml-2">Mark Paid</button>
+                            </form>
+                            {% else %}
+                            <span class="text-green-600 font-medium">Done</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-2">
+                            {% if p.status == 'Pending' %}
+                            <form method="POST" action="{{ url_for('main.send_reminder', flat_id=p.flat_id) }}">
+                                <button type="submit" class="bg-yellow-400 text-black px-3 py-1 rounded hover:bg-yellow-500">
+                                    Send Reminder
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="text-gray-400 italic">—</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-2">
+                            <form method="POST" action="{{ url_for('main.delete_payment', payment_id=p.id) }}">
+                                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        async function markPaid(event, paymentId) {
+            event.preventDefault();
+            const form = event.target;
+            const months = form.months_paid.value;
+
+            const res = await fetch(`/mark-paid/${paymentId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ months_paid: months })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                window.location.reload(); // Reload only if success
+            } else {
+                alert('Failed to update payment.');
+            }
+        }
+    </script>
+</body>
+</html>

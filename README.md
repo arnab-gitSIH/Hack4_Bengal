@@ -10,7 +10,7 @@ A smart web application to streamline flat maintenance collection, payment track
 ---
 
 ## 🚀 Features
-
+ 
 ✅ OTP-based signup (email verification)  
 ✅ Separate login portals for **Owners** and **Secretaries**  
 ✅ Dashboard to manage:

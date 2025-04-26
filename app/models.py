@@ -8,7 +8,7 @@ app = Flask(__name__)
 # MySQL Configuration
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Hrik29@05'  # Replace with your actual password
+app.config['MYSQL_PASSWORD'] = ''  # Replace with your actual password
 app.config['MYSQL_DB'] = 'flat_maintenance'
 app.config['MYSQL_PORT'] = 3306  # This is the default MySQL port
 
